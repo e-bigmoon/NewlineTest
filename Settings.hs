@@ -16,7 +16,8 @@ import Language.Haskell.TH.Syntax  (Exp, Name, Q)
 import Network.Wai.Handler.Warp    (HostPreference)
 import Yesod.Default.Config2       (applyEnvValue, configSettingsYml)
 import Yesod.Default.Util          (WidgetFileSettings, widgetFileNoReload,
-                                    widgetFileReload)
+                                    widgetFileReload, wfsHamletSettings)
+import Text.Hamlet (NewlineStyle (NoNewlines), hamletNewlines, defaultHamletSettings)
 
 -- | Runtime settings to configure this application. These settings can be
 -- loaded from various sources: defaults, environment variables, config files,
@@ -98,7 +99,11 @@ widgetFile :: String -> Q Exp
 widgetFile = (if appReloadTemplates compileTimeAppSettings
                 then widgetFileReload
                 else widgetFileNoReload)
-              widgetFileSettings
+             widgetFileSettings
+             { wfsHamletSettings = defaultHamletSettings
+               { hamletNewlines = NoNewlines
+               }
+             }
 
 -- | Raw bytes at compile time of @config/settings.yml@
 configSettingsYmlBS :: ByteString
